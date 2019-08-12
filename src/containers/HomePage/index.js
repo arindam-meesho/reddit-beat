@@ -1,20 +1,77 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import actions from "./actions";
+import apis from "./apis";
 import { NavLink as Link } from "react-router-dom";
 import ListView from "../../components/ListView";
 import ListViewLoader from "../../components/ListView/Loading";
 import Waypoint from "react-waypoint";
 import PropTypes from "prop-types";
 
+const isEmpty = false
+
 class HomePage extends Component {
   state = {
-    loading: false
+    loading: false,
+    subreddit: {
+      ui: [],
+      request: false
+    },
+    subredditList: []
+
   };
+
+  reduceSubReddit = (payload) => {
+    const { subreddit } = payload;
+    let ui = [];
+    if (
+      payload.data &&
+      payload.data.children &&
+      payload.data.children.length
+    ) {
+      ui = payload.data.children
+        .map(item => ({
+          kind: item.kind,
+          ...item.data
+        }))
+        .filter(item => {
+          return item.post_hint && item.post_hint === "image" ? true : false;
+        });
+    }
+    const after = {
+      // ...state.after,
+      ...{ [subreddit]: payload.data.after }
+    };
+    // if (state && (!state[subreddit] || !state[subreddit].length)) {
+    //   return {
+    //     request: false,
+    //     ui,
+    //     [subreddit]: ui,
+    //     after
+    //   };
+    // }
+
+    this.setState({
+      subreddit: {
+        request:false, 
+        ui
+      }
+    })
+
+  }
+
+  reduceSubRedditList = (payload) => {
+    this.setState({ subredditList: payload })
+  }
+  
   apiCall(props) {
-    const { getSubreddit, getSubList, dispatch, match } = props;
-    dispatch(getSubList());
-    dispatch(getSubreddit(match.params.subreddit));
+    const { getSubreddit, getSubList } = apis;
+    const { match } = props
+    
+    const res = getSubList();
+    this.reduceSubRedditList(res);
+
+    getSubreddit(match.params.subreddit).then(res=> {
+      this.reduceSubReddit(res.data);
+    });
   }
 
   componentDidMount() {
@@ -33,13 +90,14 @@ class HomePage extends Component {
   };
 
   handleWayPointEnter = () => {
-    const { getSubreddit, dispatch, match, subreddit } = this.props;
-    const after = subreddit.after[match.params.subreddit];
+    const {getSubreddit,} = apis
+    const {  match } = this.props;
+    const after = undefined
     if (after) {
       this.setState({
         loading: true
       });
-      dispatch(getSubreddit(match.params.subreddit, after))
+      getSubreddit(match.params.subreddit, after)
         .then(() => {
           this.setState({
             loading: false
@@ -52,14 +110,8 @@ class HomePage extends Component {
   };
 
   render() {
-    const { subredditList, match, subreddit } = this.props;
-    const result =
-      match.params.subreddit &&
-      subreddit[match.params.subreddit] &&
-      subreddit[match.params.subreddit].length
-        ? subreddit[match.params.subreddit]
-        : [];
-    const isEmpty = !result.length && !subreddit.request ? true : false;
+    const { match } = this.props;
+    const { subreddit } = this.state
     return (
       <div className="container-fluid">
         <div className="container">
@@ -67,7 +119,7 @@ class HomePage extends Component {
             {/* SideBar */}
             <div className="col-12 col-md-3 sidebar">
               <ul className="list-unstyled">
-                {subredditList.ui.map((item, idx) => (
+                {this.state.subredditList.map((item, idx) => (
                   <li key={`reddit-${idx}`}>
                     <Link to={`/r/${item}`} activeClassName="active">
                       <i className="fa fa-angle-double-right" />
@@ -106,17 +158,17 @@ class HomePage extends Component {
                 </>
               ) : (
                 <>
-                  {subreddit[match.params.subreddit] &&
-                    subreddit[match.params.subreddit].length &&
-                    subreddit[match.params.subreddit].map(item => (
+                  {subreddit.ui &&
+                    subreddit.ui.length &&
+                    subreddit.ui.map(item => (
                       <ListView
                         hide={id => this.hide(id)}
                         {...item}
                         key={`${match.params.subreddit}-${item.id}`}
                       />
                     ))}
-                  {subreddit[match.params.subreddit] &&
-                  subreddit[match.params.subreddit].length ? (
+                  {subreddit.ui &&
+                  subreddit.ui.length ? (
                     <>
                       {this.state.loading ? (
                         <h2 className="text-center">Loading...</h2>
@@ -153,31 +205,4 @@ class HomePage extends Component {
   }
 }
 
-HomePage.propTypes = {
-  getSubreddit: PropTypes.func,
-  getSubList: PropTypes.func,
-  redditHid: PropTypes.func,
-  subreddit: PropTypes.shape({
-    ui: PropTypes.array,
-    request: PropTypes.bool,
-    after: PropTypes.object
-  })
-};
-
-const mapState = state => {
-  return {
-    ...state
-  };
-};
-
-const mapDispatch = dispatch => {
-  return {
-    dispatch,
-    ...actions
-  };
-};
-
-export default connect(
-  mapState,
-  mapDispatch
-)(HomePage);
+export default HomePage;
