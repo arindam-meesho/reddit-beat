@@ -21,7 +21,6 @@ export const getSubList = ()  => {
       "cats",
       "images",
       "photoshopbattles",
-      "hmmm",
       "all",
       "aww"
     ];

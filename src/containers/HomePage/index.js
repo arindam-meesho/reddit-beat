@@ -16,11 +16,9 @@ class HomePage extends Component {
       request: false
     },
     subredditList: []
-
   };
 
   reduceSubReddit = (payload) => {
-    const { subreddit } = payload;
     let ui = [];
     if (
       payload.data &&
@@ -36,22 +34,10 @@ class HomePage extends Component {
           return item.post_hint && item.post_hint === "image" ? true : false;
         });
     }
-    const after = {
-      // ...state.after,
-      ...{ [subreddit]: payload.data.after }
-    };
-    // if (state && (!state[subreddit] || !state[subreddit].length)) {
-    //   return {
-    //     request: false,
-    //     ui,
-    //     [subreddit]: ui,
-    //     after
-    //   };
-    // }
 
     this.setState({
       subreddit: {
-        request:false, 
+        request: false, 
         ui
       }
     })
@@ -68,6 +54,12 @@ class HomePage extends Component {
     
     const res = getSubList();
     this.reduceSubRedditList(res);
+    this.setState({
+      subreddit: {
+        ui: [],
+        request: true
+      }
+    });
 
     getSubreddit(match.params.subreddit).then(res=> {
       this.reduceSubReddit(res.data);
@@ -90,7 +82,7 @@ class HomePage extends Component {
   };
 
   handleWayPointEnter = () => {
-    const {getSubreddit,} = apis
+    const { getSubreddit } = apis
     const {  match } = this.props;
     const after = undefined
     if (after) {
@@ -140,7 +132,7 @@ class HomePage extends Component {
                       src={"/reddit2.png"}
                       alt="Title"
                       className="img-fluid img-title"
-                    />{" "}
+                    />
                     &nbsp;/{match.params.subreddit}
                   </h4>
                 </div>
@@ -151,11 +143,12 @@ class HomePage extends Component {
                 </div>
               </div>
               {subreddit.request ? (
-                <>
-                  {[0, 1, 2, 3, 5, 6, 7].map(item => (
-                    <ListViewLoader key={item} />
-                  ))}
-                </>
+                <div className="row" style={{
+                  paddingLeft: '50%',
+                  marginTop: '150px'
+                }}>
+                  <ListViewLoader />
+                </div>
               ) : (
                 <>
                   {subreddit.ui &&
