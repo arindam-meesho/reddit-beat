@@ -64,88 +64,18 @@ importScripts(
     self.skipWaiting();
   });
   
-  workbox.routing.registerRoute(
-    'https://cdn.polyfill.io/v3/polyfill.min.js',
-    new workbox.strategies.CacheFirst({
-      cacheName: 'polyfill',
-      plugins: [
-        new workbox.expiration.Plugin({
-          maxEntries: 50,
-          maxAgeSeconds: 60 * 60, // 60 minutes
-        }),
-        new workbox.cacheableResponse.Plugin({
-          statuses: [0, 200],
-        }),
-      ],
-    }),
-  );
-  
-  // workbox.routing.registerRoute(
-  //   new RegExp('/api/1.0/logo-config'),
-  //   new workbox.strategies.StaleWhileRevalidate({
-  //     cacheName: 'api-cache',
-  //     plugins: [
-  //       new workbox.cacheableResponse.Plugin({
-  //         statuses: [0, 200],
-  //       }),
-  //     ],
-  //   }),
-  // );
-  
-  workbox.routing.registerRoute(
-    new RegExp('^https://supply-dev6.meeshoapi.com/api/1.0/user-profile'),
-    new workbox.strategies.CacheFirst({
-      cacheName: 'api-cache',
-      plugins: [
-        new workbox.expiration.Plugin({
-          maxEntries: 2,
-          maxAgeSeconds: 0.5 * 60, // 60 minutes
-        }),
-        new workbox.cacheableResponse.Plugin({
-          statuses: [0, 200, 204],
-        }),
-      ],
-    }),
-    'GET',
-  );
-  
-  workbox.routing.registerRoute(
-    new RegExp('https://supply-dev6.meeshoapi.com/api/1.0/logo-config/fetch'),
-    new workbox.strategies.CacheFirst({
-      cacheName: 'api-cache',
-      plugins: [
-        new workbox.expiration.Plugin({
-          maxEntries: 2,
-          maxAgeSeconds: 0.5 * 60, // 60 minutes
-        }),
-        new workbox.cacheableResponse.Plugin({
-          statuses: [0, 200, 204],
-        }),
-      ],
-    }),
-  );
-  
-  workbox.routing.registerRoute(
-    new RegExp('/logo/*'),
-    new workbox.strategies.CacheFirst({
-      cacheName: 'page-cache',
-      plugins: [
-        new workbox.expiration.Plugin({
-          maxEntries: 10,
-          maxAgeSeconds: 60 * 60, // 60 minutes
-        }),
-        new workbox.cacheableResponse.Plugin({
-          statuses: [0, 200, 204],
-        }),
-      ],
-    }),
-  );
-  
-  // workbox.routing.registerRoute(
-  //   // This matchCallback will only be true if the request
-  //   // has an X-Source header set to 'fetch':
-  //   ({ event }) =>
-  //     // console.log(event.request.method);
-  //     event.request.headers.get('X-Source') === 'fetch',
-  //   new workbox.strategies.NetworkOnly(),
-  // );
+workbox.routing.registerRoute(
+  new RegExp('https://www.reddit.com/r/*'),
+  new workbox.strategies.CacheFirst({
+    cacheName: 'api-cache',
+    plugins: [
+      new workbox.expiration.Plugin({
+        maxEntries: 50,
+        maxAgeSeconds: 60 * 60, // 60 minutes
+      }),
+      new workbox.cacheableResponse.Plugin({
+        statuses: [0, 200],
+      }),
+    ],
+  }),
+);

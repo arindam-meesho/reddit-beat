@@ -9,7 +9,7 @@ const buildSW = () =>
       globDirectory: 'build/',
       globPatterns: ['**/*.{json,ico,svg,png,html,js,css}'],
       swDest: 'build/sw.js',
-      swSrc: 'internals/worker/sw.template.js',
+      swSrc: 'script/workers/sw.template.js',
       injectionPointRegexp: /(const precacheManifest = )\[\](;)/,
     })
 
