@@ -1,14 +1,26 @@
-import axios from 'axios';
-import { setupCache } from 'axios-cache-adapter'
+// import axios from 'axios';
+import { setup } from 'axios-cache-adapter'
+import localforage from 'localforage'
 
-// Create `axios-cache-adapter` instance
-const cache = setupCache({
-  maxAge: 15 * 60 * 1000
+// Create `localforage` instance
+const forageStore = localforage.createInstance({
+  // List of drivers used
+  driver: [
+    // localforage.INDEXEDDB,
+    localforage.LOCALSTORAGE,
+  ],
+  // Prefix all storage keys to prevent conflicts
+  name: 'reddit-cache:/'
 })
 
-const http = axios.create({
-  adapter: cache.adapter
-});
+  // Create `axios` instance with pre-configured `axios-cache-adapter` using a `localforage` store
+const http = setup({
+  // `axios-cache-adapter` options
+  cache: {
+    maxAge: 15 * 60 * 1000,
+    store: forageStore // Pass `localforage` store to `axios-cache-adapter`
+  }
+})
 
 export const getSubreddit = (subreddit, after)  => {
     let params = {};
@@ -19,8 +31,6 @@ export const getSubreddit = (subreddit, after)  => {
     }
     return http.get(`https://www.reddit.com/r/${subreddit}.json`)
 };
-
-
 
 export const getSubList = ()  => {
     const payload = [
@@ -37,7 +47,6 @@ export const getSubList = ()  => {
     return payload
 };
 
-window.axiosCache = cache
 
 export default {
   getSubList,
