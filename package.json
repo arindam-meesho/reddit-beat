@@ -6,6 +6,8 @@
     "@crazyhacker/bootstrap-theme": "^0.2.0",
     "@reach/router": "^1.2.1",
     "axios": "^0.18.0",
+    "axios-cache-adapter": "^2.4.1",
+    "axios-extensions": "^3.0.6",
     "bootstrap": "^4.2.1",
     "connected-react-router": "^6.1.0",
     "node-sass": "^4.11.0",
@@ -30,7 +32,7 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "cross-env LOGGER_LEVEL=info react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -45,6 +47,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "workbox-build": "^4.3.1"
   }
 }

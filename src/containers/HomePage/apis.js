@@ -1,4 +1,14 @@
 import axios from 'axios';
+import { setupCache } from 'axios-cache-adapter'
+
+// Create `axios-cache-adapter` instance
+const cache = setupCache({
+  maxAge: 15 * 60 * 1000
+})
+
+const http = axios.create({
+  adapter: cache.adapter
+});
 
 export const getSubreddit = (subreddit, after)  => {
     let params = {};
@@ -7,7 +17,7 @@ export const getSubreddit = (subreddit, after)  => {
         after
       };
     }
-    return axios.get(`https://www.reddit.com/r/${subreddit}.json`, { params })
+    return http.get(`https://www.reddit.com/r/${subreddit}.json`)
 };
 
 
@@ -26,7 +36,9 @@ export const getSubList = ()  => {
     ];
     return payload
 };
-  
+
+window.axiosCache = cache
+
 export default {
   getSubList,
   getSubreddit
