@@ -4,7 +4,7 @@ import { NavLink as Link } from "react-router-dom";
 import ListView from "../../components/ListView";
 import ListViewLoader from "../../components/ListView/Loading";
 import Waypoint from "react-waypoint";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 
 const isEmpty = false
 

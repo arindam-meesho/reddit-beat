@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, BrowserRouter as Router } from "react-router-dom";
 import styled from "styled-components";
 import HomePage from '../HomePage/Loadable';
 import NotFound from '../../components/404'
@@ -15,6 +15,7 @@ const AppWrapper = styled.div`
 class App extends Component {
     render() {
         return (
+        <Router>
             <AppWrapper>
                 <Header/>
                     <Switch>
@@ -25,6 +26,7 @@ class App extends Component {
                         <Route path="*" component={NotFound} />
                     </Switch>
             </AppWrapper>
+        </Router>
         );
     }
 }
