@@ -1,6 +1,9 @@
-// import axios from 'axios';
+import axios from 'axios';
 import { setup } from 'axios-cache-adapter'
 import localforage from 'localforage'
+
+
+window.axios = axios;
 
 // Create `localforage` instance
 const forageStore = localforage.createInstance({
@@ -18,8 +21,15 @@ const http = setup({
   // `axios-cache-adapter` options
   cache: {
     maxAge: 15 * 60 * 1000,
-    store: forageStore // Pass `localforage` store to `axios-cache-adapter`
-  }
+    store: forageStore, // Pass `localforage` store to `axios-cache-adapter`
+    // {Function} Invalidate stored cache. By default will remove cache when
+    // making a `POST`, `PUT`, `PATCH` or `DELETE` query.
+    invalidate: async (config, request) => {
+      if(request.url.indexOf('adviceanimals.json') > -1) {
+        await config.store.removeItem(config.uuid)
+      }
+    },
+  },
 })
 
 export const getSubreddit = (subreddit, after)  => {
@@ -29,7 +39,7 @@ export const getSubreddit = (subreddit, after)  => {
         after
       };
     }
-    return http.get(`https://www.reddit.com/r/${subreddit}.json`)
+    return http.get(`https://www.reddit.com/r/${subreddit}.json`, { params })
 };
 
 export const getSubList = ()  => {
