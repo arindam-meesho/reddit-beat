@@ -6,7 +6,16 @@ importScripts(
 
 const precacheManifest = [];
 
-workbox.precaching.precacheAndRoute(precacheManifest);
+const precacheManifestM = precacheManifest.filter(o => {
+  if(o.url === 'mockapi/xkcd.json') {
+    return false
+  }
+  return true
+})
+
+console.log(precacheManifestM)
+
+workbox.precaching.precacheAndRoute(precacheManifestM);
 
 const filesToCache = [
 ];
@@ -81,7 +90,7 @@ workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 workbox.routing.registerNavigationRoute(workbox.precaching.getCacheKeyForURL("/index.html"), {
   whitelist: [
     /\/r\/*/,
-    /\/mock\/*/,
+    /\/mock\/cache/,
   ],
   blacklist: [/^\/_/,/\/[^\/?]+\.[^\/]+$/],
 });
@@ -166,18 +175,18 @@ workbox.routing.registerRoute(
   }),
 );
 
-// workbox.routing.registerRoute(
-//   new RegExp('/mock/xkcd.json'),
-//   new workbox.strategies.NetworkFirst({
-//     cacheName: 'stale-revalidate-api-cache',
-//     plugins: [
-//       new workbox.expiration.Plugin({
-//         maxEntries: 50,
-//         maxAgeSeconds: 60 * 60, // 60 minutes
-//       }),
-//       new workbox.cacheableResponse.Plugin({
-//         statuses: [0, 200],
-//       }),
-//     ],
-//   }),
-// );
+workbox.routing.registerRoute(
+  new RegExp('/mockapi/xkcd.json'),
+  new workbox.strategies.NetworkFirst({
+    cacheName: 'stale-revalidate-api-cache',
+    plugins: [
+      new workbox.expiration.Plugin({
+        maxEntries: 50,
+        maxAgeSeconds: 60 * 60, // 60 minutes
+      }),
+      new workbox.cacheableResponse.Plugin({
+        statuses: [0, 200],
+      }),
+    ],
+  }),
+);

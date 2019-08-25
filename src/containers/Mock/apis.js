@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getSubList } from "../HomePage/apis";
 
 export const getMockSubreddit = ()  => {
-  return axios.get(`/mock/xkcd.json`)
+  return axios.get(`/mockapi/xkcd.json`)
 };
 
 export default {
