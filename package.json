@@ -36,6 +36,7 @@
     "start": "cross-env LOGGER_LEVEL=info react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "sw": "node script/workers/sw.build.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

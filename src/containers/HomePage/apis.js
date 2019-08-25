@@ -1,60 +1,29 @@
 import axios from 'axios';
-import { setup } from 'axios-cache-adapter'
-import localforage from 'localforage'
-
-
-window.axios = axios;
-
-// Create `localforage` instance
-const forageStore = localforage.createInstance({
-  // List of drivers used
-  driver: [
-    // localforage.INDEXEDDB,
-    localforage.LOCALSTORAGE,
-  ],
-  // Prefix all storage keys to prevent conflicts
-  name: 'reddit-cache:/'
-})
-
-  // Create `axios` instance with pre-configured `axios-cache-adapter` using a `localforage` store
-const http = setup({
-  // `axios-cache-adapter` options
-  cache: {
-    maxAge: 15 * 60 * 1000,
-    store: forageStore, // Pass `localforage` store to `axios-cache-adapter`
-    // {Function} Invalidate stored cache. By default will remove cache when
-    // making a `POST`, `PUT`, `PATCH` or `DELETE` query.
-    invalidate: async (config, request) => {
-      if(request.url.indexOf('adviceanimals.json') > -1) {
-        await config.store.removeItem(config.uuid)
-      }
-    },
-  },
-})
 
 export const getSubreddit = (subreddit, after)  => {
-    let params = {};
-    if (after) {
-      params = {
-        after
-      };
-    }
-    return http.get(`https://www.reddit.com/r/${subreddit}.json`, { params })
+  let params = {};
+  if (after) {
+    params = {
+      after
+    };
+  }
+  
+  return axios.get(`https://www.reddit.com/r/${subreddit}.json`, { params })
 };
 
 export const getSubList = ()  => {
-    const payload = [
-      "alternativeart",
-      "pics",
-      "gifs",
-      "adviceanimals",
-      "cats",
-      "images",
-      "photoshopbattles",
-      "all",
-      "aww"
-    ];
-    return payload
+  const payload = [
+    "alternativeart",
+    "pics",
+    "gifs",
+    "adviceanimals",
+    "cats",
+    "images",
+    "photoshopbattles",
+    "all",
+    "aww"
+  ];
+  return payload
 };
 
 

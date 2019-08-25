@@ -30,9 +30,9 @@ class HomePage extends Component {
           kind: item.kind,
           ...item.data
         }))
-        .filter(item => {
-          return item.post_hint && item.post_hint === "image" ? true : false;
-        });
+        // .filter(item => {
+        //   return item.post_hint && item.post_hint === "image" ? true : false;
+        // });
     }
 
     this.setState({
@@ -49,8 +49,7 @@ class HomePage extends Component {
   }
   
   apiCall(props) {
-    const { getSubreddit, getSubList } = apis;
-    const { match } = props
+    const { getMockSubreddit, getSubList } = apis;
     
     const res = getSubList();
     this.reduceSubRedditList(res);
@@ -61,32 +60,23 @@ class HomePage extends Component {
       }
     });
 
-    if(match.params.subreddit) {
-      getSubreddit(match.params.subreddit).then(res=> {
-        this.reduceSubReddit(res.data);
-      });
-    }
+    getMockSubreddit().then(res=> {
+      this.reduceSubReddit(res.data);
+    });
   }
 
   componentDidMount() {
     this.apiCall(this.props);
   }
 
-  componentWillReceiveProps(nProps) {
-    const currentProps = this.props;
-    if (currentProps.match.params.subreddit !== nProps.match.params.subreddit)
-      this.apiCall(nProps);
-  }
-
   handleWayPointEnter = () => {
-    const { getSubreddit } = apis
-    const {  match } = this.props;
+    const { getMockSubreddit } = apis
     const after = undefined
     if (after) {
       this.setState({
         loading: true
       });
-      getSubreddit(match.params.subreddit, after)
+      getMockSubreddit()
         .then(() => {
           this.setState({
             loading: false
@@ -99,7 +89,6 @@ class HomePage extends Component {
   };
 
   render() {
-    const { match } = this.props;
     const { subreddit } = this.state
     return (
       <div className="container-fluid">
@@ -130,7 +119,7 @@ class HomePage extends Component {
                       alt="Title"
                       className="img-fluid img-title"
                     />
-                    &nbsp;/{match.params.subreddit}
+                    &nbsp;/{'Xkcd'}
                   </h4>
                 </div>
                 <div className="col-6 text-right padding-0 d-none d-md-block">
@@ -154,7 +143,7 @@ class HomePage extends Component {
                       <ListView
                         hide={id => this.hide(id)}
                         {...item}
-                        key={`${match.params.subreddit}-${item.id}`}
+                        key={`${'Xkcd'}-${item.id}`}
                       />
                     ))}
                   {subreddit.ui &&

@@ -35,12 +35,12 @@ export default class ListView extends Component {
       id,
       created_utc,
       hidden,
-      thumbnail,
       num_comments,
       permalink,
       preview,
       url
     } = this.props;
+    let { thumbnail } = this.props;
 
     let originalImg;
     let originalImgUrl = url;
@@ -49,6 +49,9 @@ export default class ListView extends Component {
       originalImgUrl = unescape(originalImg.url);
     } catch (error) {}
     if (hidden) return <Box />;
+    if(thumbnail === 'self' || thumbnail === 'default') {
+      thumbnail = '/reddit2.png'
+    }
     const renderer = (
       <>
         <div className="card list-view ">
@@ -134,7 +137,7 @@ export default class ListView extends Component {
                 </div>
                 {this.state.imgToggle && !(selftext_html && selftext) ? (
                   <div className="col-12 text-center padding-y-20">
-                    <img
+                    <img 
                       src={originalImgUrl}
                       className="img-fluid w-75"
                       alt="・"
@@ -147,7 +150,7 @@ export default class ListView extends Component {
                   <div className="outer-div">
                     <div className="inner-div" onClick={this.toggelImage}>
                       {thumbnail ? (
-                        <img
+                        <img 
                           src={thumbnail}
                           className="img-fluid screen text-right"
                           alt="・"
@@ -199,5 +202,6 @@ ListView.propTypes = {
 
 ListView.defaultProps = {
   title: "NA",
-  author: "NA"
+  author: "NA",
+  thumbnail: '/reddit2.png'
 };
